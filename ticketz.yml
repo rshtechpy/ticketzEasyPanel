@@ -1,0 +1,55 @@
+services:
+  ticketz_backend:
+    image: ghcr.io/ticketz-oss/ticketz-backend:latest
+    container_name: ticketz-backend
+    volumes:
+      - ticketz_backend_public:/usr/src/app/public
+      - ticketz_backend_private:/usr/src/app/private
+    environment:
+      - FRONTEND_HOST=$(EASYPANEL_DOMAIN)
+      - BACKEND_PATH=/backend
+      - EMAIL_ADDRESS=admin@example.com
+      - TZ=America/Sao_Paulo
+      - BACKEND_URL=https://$(EASYPANEL_DOMAIN)/backend
+      - FRONTEND_URL=https://$(EASYPANEL_DOMAIN)
+      - DB_DIALECT=postgres
+      - DB_HOST=testos_postgres
+      - DB_PORT=5432
+      - DB_USER=psotgres
+      - DB_NAME=postgres
+      - DB_PASS=z3r0c00l
+      - REDIS_URI=redis://default:5b46fe3ab5e22e0df88b@testos_redis:6379/1
+      - REDIS_OPT_LIMITER_MAX=1
+      - REDIS_OPT_LIMITER_DURATION=3000
+      - USER_LIMIT=10000
+      - CONNECTIONS_LIMIT=100000
+      - CLOSED_SEND_BY_ME=true
+      - VERIFY_TOKEN=ticketz
+    networks:
+      easypanel-testos:
+        aliases:
+          - backend
+
+  ticketz_frontend:
+    image: ghcr.io/ticketz-oss/ticketz-frontend:latest
+    container_name: ticketz-frontend
+    volumes:
+      - ticketz_backend_public:/var/www/backend-public
+    environment:
+      - FRONTEND_HOST=https://$(EASYPANEL_DOMAIN)
+      - BACKEND_PATH=/backend
+      - BACKEND_HOST=$(EASYPANEL_DOMAIN)
+      - BACKEND_PROTOCOL=https
+      - BACKEND_PORT=443
+      - EMAIL_ADDRESS=admin@example.com
+    networks:
+      - easypanel-testos
+
+volumes:
+  ticketz_backend_public:
+  ticketz_backend_private:
+
+networks:
+  easypanel-testos:
+    external: true
+    name: easypanel-testos
