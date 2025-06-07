@@ -17,7 +17,7 @@ services:
       - DB_PORT=5432
       - DB_USER=psotgres
       - DB_NAME=postgres
-      - DB_PASS=z3r0c00l
+      - DB_PASS=postgres
       - REDIS_URI=redis://default:5b46fe3ab5e22e0df88b@testos_redis:6379/1
       - REDIS_OPT_LIMITER_MAX=1
       - REDIS_OPT_LIMITER_DURATION=3000
